@@ -1,85 +1,149 @@
-body {
-    background: #4195b6;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-#app {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    background: #EBF8F4;
-    border-radius: 10px;
-    box-shadow: 1px 1px 5px 0 10px 20px rgb(0 0 0 / 15%);
-    padding: 20px;
-}
-
-.generate-pass {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.generate-pass input {
-    border: 1px solid #CCC;
-    border-radius: 20px;
-    padding: 10px 20px;
-    color: #878787;
-    width: 100%;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+*{
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-.generate-pass .copy {
+body{
+    background: #2272FF;
+    
+color: black;
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+}
+
+.container{
+    width: 450px;
+    background: white;
+    border-radius: 8px;
+}
+
+.container h2{
+    font-weight: 600;
+    font-size: 1.31rem;
+    padding: 1rem 1.175rem;
+    border-bottom: 1px solid #d4dbe5;
+}
+
+.wrapper{
+    margin: 1.25rem 1.75rem;
+}
+
+.wrapper .input-box{
+    position: relative;
+}
+
+.input-box input{
+    width: 100%;
+    height: 53px;
+    color: #000;
+    background: none;
+    font-size: 1.06rem;
+    font-weight: 500;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    padding: 0 2.85rem 0 1rem;
+    letter-spacing: 1.4px;
+}
+
+.input-box span{
     position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
+    right: 13px;
+    line-height: 53px;
+    color: #707070;
     cursor: pointer;
-    width: 10px;
-    fill: #878787;
 }
 
-.inputs {
-    width: 80%;
-    margin: 0 auto;
-}
-
-label,
-.input-group {
-    margin-bottom: 10px;
-}
-
-label {
-    display: flex;
-    gap: 20px;
-}
-
-label input {
-    pointer-events: none;
-}
-
-.slider-container {
-    display: flex;
-    gap: 20px;
-}
-
-.slider {
+.wrapper .pass-indicator{
     width: 100%;
-    height: 3px;
-    margin-top: 10px;
+    height: 4px;
+    position: relative;
+    background: #dfdfdf;
+    margin-top: 0.75rem;
+    border-radius: 25px;
 }
 
-.slider::-webkit-slider-thumb {
-    cursor: pointer;
+.pass-indicator::before{
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 50%;
+    background: #f1c80b;
+    border-radius: inherit;
+    transition: width 0.3 ease; 
 }
 
-button {
-    background: #e69e1a;
-    color: #FFF;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 0;
-    cursor: pointer;
+.pass-indicator#weak::before{
+    width: 20%;
+    background: #E64A4A;
+}
+
+.pass-indicator#medium::before{
+    width: 50%;
+    background: #f1c80b;
+}
+
+.pass-indicator#strong::before{
     width: 100%;
+    background: #4285F4;
 }
+
+.wrapper .pass-length{
+    margin: 1.56rem 0 1.25rem;
+}
+
+.pass-length .details{
+    display: flex;
+    justify-content: space-between;
+}
+
+.pass-length input{
+    width: 100%;
+    height: 11px;   /*great height*/
+}
+
+.pass-settings .options{
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.pass-settings .options .option{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: calc(100% / 2);
+}
+
+.options .option input{
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+}
+
+.options .option label{
+    cursor: pointer;
+    padding-left: 0.63rem;
+}
+
+.wrapper .generate-btn{
+    width: 100%;
+    color: #fff;
+    background: #2272FF;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 1.06rem;
+    padding: 0.94rem 0;
+    border-radius: 5px;
+    margin: 0.94rem 0 1.3rem;
+}
+
+
+/* @bycapwan */

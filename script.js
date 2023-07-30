@@ -1,70 +1,76 @@
-const flags = {
-    uppercase: false,
-    numbers: false,
-    symbols: false,
-    length: 5
-}
+const lengthSlider = document.querySelector(".pass-length input"),
+options = document.querySelectorAll(".option input"),
+copyIcon = document.querySelector(".input-box span"),
+passwordInput = document.querySelector(".input-box input"),
+passIndicator = document.querySelector(".pass-indicator"),
+generateBtn = document.querySelector(".generate-btn");
 
-const selectors = {
-    copy: 'copy',
-    checkbox: 'checkbox',
-    slider: 'slider',
-    button: 'button',
-    sliderValue: document.querySelector('.value'),
-    input: document.querySelector('input[type="text"]')
+const characters = {  // all options for generate password
+    lowercase: "abcdefghijklmnopqrstuvwxyz",
+    uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    numbers: "0123456789",
+    symbols: "~!@#$%^&*()_+-=?[]{}\|;':<>/,."
 }
 
 const generatePassword = () => {
-    const defaultCharacters = 'abcdefghijklmnopqrstuvwxyz'
-    const characters = {
-        uppercase: defaultCharacters.toUpperCase(),
-        numbers: '0123456789',
-        symbols: '~!@-#$'
+    let staticPassword = "",
+    randomPassword = "",
+    excludeDuplicate = false,
+    passLength = lengthSlider.value;
+
+    options.forEach(option => {
+        if(option.checked) {
+            if(option.id !== "exc-duplicate" && option.id !== "spaces") {
+                staticPassword += characters[option.id]; 
+            } else if(option.id == "spaces") {
+                staticPassword += ` ${staticPassword} `;
+            } else {
+                excludeDuplicate = true;
+            }
+        }
+    });
+
+    for (let i = 0; i < passLength; i++) {
+        let randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
+        if(excludeDuplicate) {
+            !randomPassword.includes(randomChar) || randomChar == " " ? randomPassword += randomChar : i--;
+        } else {
+            randomPassword += randomChar;
+        }
     }
 
-    const characterList = [
-        defaultCharacters,
-        ...flags.uppercase ? characters.uppercase : [],
-        ...flags.numbers ? characters.numbers : [],
-        ...flags.symbols ? characters.symbols : []
-    ].join('')
-
-    return Array.from({ length: flags.length }, () => Math.floor(Math.random() * characterList.length))
-        .map(number => characterList[number])
-        .join('')
+    passwordInput.value = randomPassword // passing randomPassword to passwordInput value
 }
 
-document.querySelector('#app').addEventListener('click', event => {
-    switch (event.target.dataset.jsSelector) {
-        // Event listener for copy
-        case selectors.copy:
-            const dummy = document.createElement('textarea')
-
-            document.body.appendChild(dummy)
-
-            dummy.value = selectors.input.value
-            dummy.select()
-
-            document.execCommand('copy')
-            document.body.removeChild(dummy)
-        break;
-
-        // Event listeners for checkboxes
-        case selectors.checkbox:
-            flags[event.target.control.id] = !event.target.control.checked
-        break;
-
-        // Event listeners for slider
-        case selectors.slider:
-            const value = event.target.valueAsNumber
-
-            selectors.sliderValue.innerText = value
-            flags.length = value
-        break;
-
-        // Event listener for generate button
-        case selectors.button:
-            selectors.input.value = generatePassword()
-        break;
+const upadatePassIndicator = () => {
+    if(lengthSlider.value <= 8) {
+        passIndicator.id = "weak";
+    } else if (lengthSlider.value <= 16) {
+        passIndicator.id = "medium";
+    } else {
+        passIndicator.id = "strong";
     }
-})
+}
+
+const updateSlider = () => {
+    // passing slider value as counter text
+    document.querySelector(".pass-length span").innerText = lengthSlider.value;
+    generatePassword();
+    upadatePassIndicator();
+}
+updateSlider();
+
+const copyPassword = () => {
+    navigator.clipboard.writeText(passwordInput.value),
+    copyIcon.innerText = "check";
+    setTimeout(() => {
+        copyIcon.innerText = "copy_all";
+    }, 600);
+}
+
+copyIcon.addEventListener("click", copyPassword);
+lengthSlider.addEventListener("input", updateSlider);
+generateBtn.addEventListener("click", generatePassword);
+
+
+// @bycapwan
