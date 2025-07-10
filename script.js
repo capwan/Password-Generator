@@ -5,7 +5,7 @@ passwordInput = document.querySelector(".input-box input"),
 passIndicator = document.querySelector(".pass-indicator"),
 generateBtn = document.querySelector(".generate-btn");
 
-// Добавляем placeholder в поле ввода
+// Устанавливаем placeholder
 passwordInput.placeholder = "Your password";
 
 const characters = {
@@ -21,32 +21,38 @@ const generatePassword = () => {
     excludeDuplicate = false,
     passLength = lengthSlider.value;
 
-    // Проверяем, есть ли хотя бы одна опция выбрана
-    let atLeastOneSelected = false;
+    // Счетчик выбранных опций
+    let selectedOptions = 0;
 
     options.forEach(option => {
-        if(option.checked && option.id !== "exc-duplicate") {
-            atLeastOneSelected = true;
-            if(option.id !== "spaces") {
-                staticPassword += characters[option.id]; 
+        if(option.checked) {
+            if(option.id !== "exc-duplicate" && option.id !== "spaces") {
+                staticPassword += characters[option.id];
+                selectedOptions++;
+            } else if(option.id === "spaces") {
+                staticPassword += " ";
             } else {
-                staticPassword += " "; // Добавляем пробел
+                excludeDuplicate = true;
             }
-        } else if(option.checked && option.id === "exc-duplicate") {
-            excludeDuplicate = true;
         }
     });
 
-    // Если ни одна опция не выбрана - показываем placeholder и выходим
-    if(!atLeastOneSelected) {
+    // Если нет выбранных опций - показываем placeholder
+    if(selectedOptions === 0) {
         passwordInput.value = "";
         return;
     }
 
+    // Генерация пароля
     for (let i = 0; i < passLength; i++) {
-        let randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
+        const randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
+        
         if(excludeDuplicate) {
-            !randomPassword.includes(randomChar) || randomChar == " " ? randomPassword += randomChar : i--;
+            if(!randomPassword.includes(randomChar) || randomChar === " ") {
+                randomPassword += randomChar;
+            } else {
+                i--;
+            }
         } else {
             randomPassword += randomChar;
         }
@@ -56,13 +62,8 @@ const generatePassword = () => {
 }
 
 const updatePassIndicator = () => {
-    if(lengthSlider.value <= 8) {
-        passIndicator.id = "weak";
-    } else if (lengthSlider.value <= 16) {
-        passIndicator.id = "medium";
-    } else {
-        passIndicator.id = "strong";
-    }
+    passIndicator.id = lengthSlider.value <= 8 ? "weak" : 
+                      lengthSlider.value <= 16 ? "medium" : "strong";
 }
 
 const updateSlider = () => {
@@ -71,34 +72,25 @@ const updateSlider = () => {
     updatePassIndicator();
 }
 
-// Инициализация при загрузке
-document.addEventListener("DOMContentLoaded", () => {
-    // Убедимся, что по крайней мере один чекбокс выбран
-    const defaultOptions = document.querySelectorAll('input[type="checkbox"][id="lowercase"], input[type="checkbox"][id="uppercase"]');
+// Инициализация при полной загрузке страницы
+window.addEventListener("load", () => {
+    // Сбрасываем все чекбоксы
+    options.forEach(option => option.checked = false);
     
-    // Если ни один чекбокс не выбран - выберем lowercase по умолчанию
-    let anyChecked = false;
-    options.forEach(option => {
-        if(option.checked && option.id !== "exc-duplicate" && option.id !== "spaces") {
-            anyChecked = true;
-        }
-    });
+    // Устанавливаем значения по умолчанию
+    document.getElementById("lowercase").checked = true;
+    document.getElementById("numbers").checked = true;
     
-    if(!anyChecked) {
-        const lowercaseOption = document.querySelector('input[type="checkbox"][id="lowercase"]');
-        if(lowercaseOption) lowercaseOption.checked = true;
-    }
-    
+    // Обновляем UI
     updateSlider();
 });
 
+// Обработчики событий
 copyIcon.addEventListener("click", () => {
     if(passwordInput.value) {
         navigator.clipboard.writeText(passwordInput.value);
         copyIcon.innerText = "check";
-        setTimeout(() => {
-            copyIcon.innerText = "copy_all";
-        }, 600);
+        setTimeout(() => copyIcon.innerText = "copy_all", 600);
     }
 });
 
