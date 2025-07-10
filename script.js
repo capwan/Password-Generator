@@ -5,11 +5,14 @@ passwordInput = document.querySelector(".input-box input"),
 passIndicator = document.querySelector(".pass-indicator"),
 generateBtn = document.querySelector(".generate-btn");
 
+// Добавляем placeholder в поле ввода
+passwordInput.placeholder = "Your password";
+
 const characters = {
     lowercase: "abcdefghijklmnopqrstuvwxyz",
     uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     numbers: "0123456789",
-    symbols: "~!@#$%^&*()_+-=?[]{}\|;':<>/,."
+    symbols: "~!@#$%^&*()_+-=?[]{}\\|;':<>/,."
 }
 
 const generatePassword = () => {
@@ -18,21 +21,26 @@ const generatePassword = () => {
     excludeDuplicate = false,
     passLength = lengthSlider.value;
 
+    // Проверяем, есть ли хотя бы одна опция выбрана
+    let atLeastOneSelected = false;
+
     options.forEach(option => {
-        if(option.checked) {
-            if(option.id !== "exc-duplicate" && option.id !== "spaces") {
+        if(option.checked && option.id !== "exc-duplicate") {
+            atLeastOneSelected = true;
+            if(option.id !== "spaces") {
                 staticPassword += characters[option.id]; 
-            } else if(option.id == "spaces") {
-                staticPassword += " "; // Добавляем пробел как отдельный символ
             } else {
-                excludeDuplicate = true;
+                staticPassword += " "; // Добавляем пробел
             }
+        } else if(option.checked && option.id === "exc-duplicate") {
+            excludeDuplicate = true;
         }
     });
 
-    // Если не выбран ни один набор символов
-    if(staticPassword === "") {
-        staticPassword = characters.lowercase; // Устанавливаем строчные буквы по умолчанию
+    // Если ни одна опция не выбрана - показываем placeholder и выходим
+    if(!atLeastOneSelected) {
+        passwordInput.value = "";
+        return;
     }
 
     for (let i = 0; i < passLength; i++) {
@@ -65,19 +73,33 @@ const updateSlider = () => {
 
 // Инициализация при загрузке
 document.addEventListener("DOMContentLoaded", () => {
-    // Помечаем чекбокс строчных букв как выбранный по умолчанию
-    const defaultOption = document.querySelector('input[type="checkbox"][id="lowercase"]');
-    if(defaultOption) defaultOption.checked = true;
+    // Убедимся, что по крайней мере один чекбокс выбран
+    const defaultOptions = document.querySelectorAll('input[type="checkbox"][id="lowercase"], input[type="checkbox"][id="uppercase"]');
+    
+    // Если ни один чекбокс не выбран - выберем lowercase по умолчанию
+    let anyChecked = false;
+    options.forEach(option => {
+        if(option.checked && option.id !== "exc-duplicate" && option.id !== "spaces") {
+            anyChecked = true;
+        }
+    });
+    
+    if(!anyChecked) {
+        const lowercaseOption = document.querySelector('input[type="checkbox"][id="lowercase"]');
+        if(lowercaseOption) lowercaseOption.checked = true;
+    }
     
     updateSlider();
 });
 
 copyIcon.addEventListener("click", () => {
-    navigator.clipboard.writeText(passwordInput.value);
-    copyIcon.innerText = "check";
-    setTimeout(() => {
-        copyIcon.innerText = "copy_all";
-    }, 600);
+    if(passwordInput.value) {
+        navigator.clipboard.writeText(passwordInput.value);
+        copyIcon.innerText = "check";
+        setTimeout(() => {
+            copyIcon.innerText = "copy_all";
+        }, 600);
+    }
 });
 
 lengthSlider.addEventListener("input", updateSlider);
