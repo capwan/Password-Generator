@@ -5,7 +5,7 @@ passwordInput = document.querySelector(".input-box input"),
 passIndicator = document.querySelector(".pass-indicator"),
 generateBtn = document.querySelector(".generate-btn");
 
-const characters = {  // all options for generate password
+const characters = {
     lowercase: "abcdefghijklmnopqrstuvwxyz",
     uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     numbers: "0123456789",
@@ -23,12 +23,17 @@ const generatePassword = () => {
             if(option.id !== "exc-duplicate" && option.id !== "spaces") {
                 staticPassword += characters[option.id]; 
             } else if(option.id == "spaces") {
-                staticPassword += ` ${staticPassword} `;
+                staticPassword += " "; // Добавляем пробел как отдельный символ
             } else {
                 excludeDuplicate = true;
             }
         }
     });
+
+    // Если не выбран ни один набор символов
+    if(staticPassword === "") {
+        staticPassword = characters.lowercase; // Устанавливаем строчные буквы по умолчанию
+    }
 
     for (let i = 0; i < passLength; i++) {
         let randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
@@ -39,10 +44,10 @@ const generatePassword = () => {
         }
     }
 
-    passwordInput.value = randomPassword // passing randomPassword to passwordInput value
+    passwordInput.value = randomPassword;
 }
 
-const upadatePassIndicator = () => {
+const updatePassIndicator = () => {
     if(lengthSlider.value <= 8) {
         passIndicator.id = "weak";
     } else if (lengthSlider.value <= 16) {
@@ -53,24 +58,27 @@ const upadatePassIndicator = () => {
 }
 
 const updateSlider = () => {
-    // passing slider value as counter text
     document.querySelector(".pass-length span").innerText = lengthSlider.value;
     generatePassword();
-    upadatePassIndicator();
+    updatePassIndicator();
 }
-updateSlider();
 
-const copyPassword = () => {
-    navigator.clipboard.writeText(passwordInput.value),
+// Инициализация при загрузке
+document.addEventListener("DOMContentLoaded", () => {
+    // Помечаем чекбокс строчных букв как выбранный по умолчанию
+    const defaultOption = document.querySelector('input[type="checkbox"][id="lowercase"]');
+    if(defaultOption) defaultOption.checked = true;
+    
+    updateSlider();
+});
+
+copyIcon.addEventListener("click", () => {
+    navigator.clipboard.writeText(passwordInput.value);
     copyIcon.innerText = "check";
     setTimeout(() => {
         copyIcon.innerText = "copy_all";
     }, 600);
-}
+});
 
-copyIcon.addEventListener("click", copyPassword);
 lengthSlider.addEventListener("input", updateSlider);
 generateBtn.addEventListener("click", generatePassword);
-
-
-// @bycapwan
