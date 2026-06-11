@@ -1,43 +1,44 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-*{
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
-body{
+body {
     background: #2272FF;
-    
-color: black;
-display: flex;
-align-items: center;
-justify-content: center;
-min-height: 100vh;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-.container{
+.container {
     width: 450px;
+    max-width: 95%;
     background: white;
     border-radius: 8px;
 }
 
-.container h2{
+.container h2 {
     font-weight: 600;
     font-size: 1.31rem;
     padding: 1rem 1.175rem;
     border-bottom: 1px solid #d4dbe5;
 }
 
-.wrapper{
+.wrapper {
     margin: 1.25rem 1.75rem;
 }
 
-.wrapper .input-box{
+.wrapper .input-box {
     position: relative;
 }
 
-.input-box input{
+.input-box input {
     width: 100%;
     height: 53px;
     color: #000;
@@ -48,90 +49,101 @@ min-height: 100vh;
     border: 1px solid #aaa;
     padding: 0 2.85rem 0 1rem;
     letter-spacing: 1.4px;
+    cursor: text;
 }
 
-.input-box span{
+.input-box .copy-icon {
     position: absolute;
     right: 13px;
-    line-height: 53px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #707070;
     cursor: pointer;
+    outline: none;
+    user-select: none;
 }
 
-.wrapper .pass-indicator{
+.input-box .copy-icon:hover {
+    color: #2272FF;
+}
+
+/* Password Strength Indicator */
+.wrapper .pass-indicator {
     width: 100%;
     height: 4px;
     position: relative;
     background: #dfdfdf;
     margin-top: 0.75rem;
     border-radius: 25px;
+    overflow: hidden;
 }
 
-.pass-indicator::before{
-    position: absolute;
+.pass-indicator::before {
     content: "";
+    position: absolute;
     height: 100%;
-    width: 50%;
-    background: #f1c80b;
-    border-radius: inherit;
-    transition: width 0.3 ease; 
-}
-
-.pass-indicator#weak::before{
-    width: 20%;
+    width: 33%;
     background: #E64A4A;
+    border-radius: inherit;
+    transition: width 0.3s ease, background 0.3s ease;
 }
 
-.pass-indicator#medium::before{
-    width: 50%;
-    background: #f1c80b;
+/* COLOR LOGIC */
+.pass-indicator#weak::before {
+    width: 33%;
+    background: #E64A4A; /* Red: up to 8 characters inclusive */
 }
 
-.pass-indicator#strong::before{
+.pass-indicator#medium::before {
+    width: 66%;
+    background: #f1c80b; /* Yellow: 9 to 15 characters */
+}
+
+.pass-indicator#strong::before {
     width: 100%;
-    background: #4285F4;
+    background: #4285F4; /* Blue: 16 characters and above */
 }
 
-.wrapper .pass-length{
+.wrapper .pass-length {
     margin: 1.56rem 0 1.25rem;
 }
 
-.pass-length .details{
+.pass-length .details {
     display: flex;
     justify-content: space-between;
 }
 
-.pass-length input{
+.pass-length input {
     width: 100%;
-    height: 11px;   /*great height*/
+    height: 11px;
 }
 
-.pass-settings .options{
+.pass-settings .options {
     display: flex;
     list-style: none;
     flex-wrap: wrap;
     margin-top: 1rem;
 }
 
-.pass-settings .options .option{
+.pass-settings .options .option {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
     width: calc(100% / 2);
 }
 
-.options .option input{
+.options .option input {
     height: 16px;
     width: 16px;
     cursor: pointer;
 }
 
-.options .option label{
+.options .option label {
     cursor: pointer;
     padding-left: 0.63rem;
 }
 
-.wrapper .generate-btn{
+.wrapper .generate-btn {
     width: 100%;
     color: #fff;
     background: #2272FF;
@@ -143,7 +155,14 @@ min-height: 100vh;
     padding: 0.94rem 0;
     border-radius: 5px;
     margin: 0.94rem 0 1.3rem;
+    transition: background 0.2s ease;
 }
 
+.wrapper .generate-btn:hover {
+    background: #1a5fd4;
+}
 
-/* @bycapwan */
+.wrapper .generate-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
