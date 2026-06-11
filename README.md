@@ -52,7 +52,7 @@ As a system administration and security-focused tool, this generator is built wi
 ## 🚀 Usage
 
 ### Online
-Simply visit the [Live Demo](https://capwan.github.io/password-generator/) and start generating secure passwords instantly.
+Simply visit the [Live Demo](https://capwan.github.io/Password-Generator/) and start generating secure passwords instantly.
 
 ### Local Installation
 If you want to host it yourself or run it locally:
