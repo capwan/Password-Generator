@@ -1,6 +1,6 @@
 # Password-Generator (`v3.0.0`)
 
-![Version](https://img.shields.io/badge/version-3.1.0-blue)
+![Version](https://img.shields.io/badge/version-3.0.0-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Hosted](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-9cf)
 ![Security](https://img.shields.io/badge/security-Crypto--Secure-brightgreen)
