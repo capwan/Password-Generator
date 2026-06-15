@@ -1,4 +1,4 @@
-# Password-Generator (`v3.0.0`)
+# Password-Generator (`v3.1.0`)
 
 ![Version](https://img.shields.io/badge/version-3.0.0-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
