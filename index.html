@@ -3,21 +3,48 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
         <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-        <title>Password Generator</title>
+        <title>🔑 Password Generator</title>
     </head>
     <body>
+        <!-- Theme toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="material-symbols-rounded theme-icon">dark_mode</span>
+        </button>
+
         <div class="container">
-            <h2>Password Generator</h2>
-            <div class="wrapper">
-                <div class="input-box">
-                    <input type="text" readonly aria-label="Generated password">
-                    <span class="material-symbols-rounded copy-icon" role="button" tabindex="0" aria-label="Copy password">copy_all</span>
+            <div class="header">
+                <div class="header-title">
+                    <span class="logo-icon">🔐</span>
+                    <h2>Password Generator</h2>
                 </div>
+                <span class="version-badge">v3.2.1</span>
+            </div>
+
+            <div class="wrapper">
+                <!-- Password display -->
+                <div class="input-box">
+                    <input type="text" readonly aria-label="Generated password" id="passwordInput">
+                    <div class="input-actions">
+                        <span class="action-icon refresh-icon material-symbols-rounded" role="button" tabindex="0" aria-label="Regenerate">refresh</span>
+                        <span class="action-icon copy-icon material-symbols-rounded" role="button" tabindex="0" aria-label="Copy">copy_all</span>
+                    </div>
+                </div>
+
+                <!-- Strength indicator -->
+                <div class="password-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Strength</span>
+                        <span class="strength-text" id="strengthText">None</span>
+                    </div>
+                </div>
+
+                <!-- Strength bar -->
                 <div class="pass-indicator"></div>
+
+                <!-- Length slider -->
                 <div class="pass-length">
                     <div class="details">
                         <label class="title">Password Length</label>
@@ -25,38 +52,86 @@
                     </div>
                     <input type="range" min="8" max="64" value="8" step="1">
                 </div>
+
+                <!-- Settings -->
                 <div class="pass-settings">
-                    <label class="title">Password Settings</label>
+                    <label class="title">Character Types</label>
                     <ul class="options">
                         <li class="option">
                             <input type="checkbox" id="lowercase">
-                            <label for="lowercase">Lowercase (a-z)</label>
+                            <label for="lowercase">
+                                <span class="check-box"></span>
+                                <span class="option-text">Lowercase <span class="hint">(a-z)</span></span>
+                            </label>
                         </li>
                         <li class="option">
                             <input type="checkbox" id="uppercase">
-                            <label for="uppercase">Uppercase (A-Z)</label>
+                            <label for="uppercase">
+                                <span class="check-box"></span>
+                                <span class="option-text">Uppercase <span class="hint">(A-Z)</span></span>
+                            </label>
                         </li>
                         <li class="option">
                             <input type="checkbox" id="numbers">
-                            <label for="numbers">Numbers (0-9)</label>
+                            <label for="numbers">
+                                <span class="check-box"></span>
+                                <span class="option-text">Numbers <span class="hint">(0-9)</span></span>
+                            </label>
                         </li>
                         <li class="option">
                             <input type="checkbox" id="symbols">
-                            <label for="symbols">Symbols (~!@#^-)</label>
+                            <label for="symbols">
+                                <span class="check-box"></span>
+                                <span class="option-text">Symbols <span class="hint">(~!@#)</span></span>
+                            </label>
                         </li>
                         <li class="option">
                             <input type="checkbox" id="exc-duplicate">
-                            <label for="exc-duplicate">Exclude duplicate</label>
+                            <label for="exc-duplicate">
+                                <span class="check-box"></span>
+                                <span class="option-text">Exclude duplicates</span>
+                            </label>
                         </li>
                         <li class="option">
                             <input type="checkbox" id="spaces">
-                            <label for="spaces">Include spaces</label>
+                            <label for="spaces">
+                                <span class="check-box"></span>
+                                <span class="option-text">Include spaces</span>
+                            </label>
                         </li>
                     </ul>
                 </div>
+
+                <!-- Generate button -->
                 <button class="generate-btn">Generate Password</button>
+
+                <!-- Keyboard shortcuts hint -->
+                <div class="shortcuts-hint">
+                    <span><kbd>Space</kbd> Generate</span>
+                    <span><kbd>Ctrl</kbd>+<kbd>C</kbd> Copy</span>
+                </div>
             </div>
         </div>
+
+        <!-- Toast notification -->
+        <div class="toast" id="toast">
+            <span class="material-symbols-rounded toast-icon">check_circle</span>
+            <span class="toast-text">Copied to clipboard!</span>
+        </div>
+
+        <!-- History panel -->
+        <div class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h3>Recent Passwords</h3>
+                <button class="history-close material-symbols-rounded" id="historyClose">close</button>
+            </div>
+            <ul class="history-list" id="historyList"></ul>
+        </div>
+
+        <button class="history-toggle" id="historyToggle" aria-label="Show history">
+            <span class="material-symbols-rounded">history</span>
+        </button>
+
         <script src="./script.js"></script>
     </body>
 </html>
