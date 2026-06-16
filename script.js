@@ -114,10 +114,20 @@ function getSecureRandom(max) {
 // ============================================
 // HELPERS
 // ============================================
+
+// Check if at least one MAIN character type is selected (not modifiers)
+const hasMainCharacterType = () => {
+    return document.getElementById("lowercase").checked ||
+           document.getElementById("uppercase").checked ||
+           document.getElementById("numbers").checked ||
+           document.getElementById("symbols").checked;
+};
+
+// Get character pool (includes spaces if selected, but excludes "exc-duplicate")
 const getStaticPassword = () => {
     let staticPassword = "";
     options.forEach(option => {
-        if (option.checked) {
+        if (option.checked && option.id !== "exc-duplicate") {
             if (characters[option.id]) {
                 staticPassword += characters[option.id];
             } else if (option.id === "spaces") {
@@ -173,6 +183,7 @@ const createPasswordString = () => {
     let passLength = parseInt(lengthSlider.value, 10);
     let randomPassword = "";
 
+    // Safety: ensure length doesn't exceed pool size when excluding duplicates
     if (excludeDuplicate && passLength > staticPassword.length) {
         passLength = staticPassword.length;
         lengthSlider.value = passLength;
@@ -217,15 +228,15 @@ const generatePassword = () => {
 };
 
 // ============================================
-// UI STATE & LIMITS
+// UI STATE & LIMITS (FIXED LOGIC)
 // ============================================
 const checkOptionsAndToggleUI = () => {
-    const staticPassword = getStaticPassword();
-    const hasValidCharacterType = staticPassword.length > 0;
+    const hasMainType = hasMainCharacterType();
 
-    if (!hasValidCharacterType) {
+    if (!hasMainType) {
+        // No main character type selected - block everything
         passwordInput.value = "";
-        passwordInput.placeholder = "Select character type";
+        passwordInput.placeholder = "Select at least one character type";
         passIndicator.style.opacity = "0";
         strengthText.innerText = "None";
         strengthText.className = "strength-text";
@@ -233,6 +244,7 @@ const checkOptionsAndToggleUI = () => {
         lengthSlider.disabled = true;
         generateBtn.disabled = true;
     } else {
+        // At least one main type is selected - enable UI
         passwordInput.placeholder = "Your password";
         passIndicator.style.opacity = "1";
 
@@ -247,33 +259,54 @@ const checkOptionsAndToggleUI = () => {
 const updateSliderLimits = () => {
     const staticPassword = getStaticPassword();
     const excludeDuplicate = document.getElementById("exc-duplicate").checked;
-    let maxLimit = 64;
-
-    if (excludeDuplicate && staticPassword.length > 0) {
-        maxLimit = staticPassword.length;
-    }
-
+    const currentValue = parseInt(lengthSlider.value, 10);
     const defaultMin = 8;
+    const defaultMax = 64;
     
-    if (maxLimit < defaultMin) {
-        lengthSlider.min = maxLimit;
-        lengthSlider.max = maxLimit;
-        lengthSlider.value = maxLimit;
-    } else {
-        lengthSlider.min = defaultMin;
-        lengthSlider.max = maxLimit;
-        if (parseInt(lengthSlider.value) > maxLimit) {
-            lengthSlider.value = maxLimit;
+    // ALWAYS keep slider at fixed range (8-64) to avoid visual jumping
+    lengthSlider.min = defaultMin;
+    lengthSlider.max = defaultMax;
+    
+    // If "Exclude duplicates" is enabled and pool is too small, adjust value
+    if (excludeDuplicate && staticPassword.length > 0) {
+        const maxPossibleLength = staticPassword.length;
+        
+        if (currentValue > maxPossibleLength) {
+            // Only adjust if current value exceeds pool size
+            lengthSlider.value = maxPossibleLength;
+            if (lengthDisplay) lengthDisplay.innerText = maxPossibleLength;
+        } else {
+            // Value is OK, just update display
+            if (lengthDisplay) lengthDisplay.innerText = currentValue;
         }
+    } else {
+        // No "Exclude duplicates" - just update display
+        if (lengthDisplay) lengthDisplay.innerText = currentValue;
     }
-
-    if (lengthDisplay) lengthDisplay.innerText = lengthSlider.value;
 };
 
 const updateSlider = () => {
     if (!lengthSlider.disabled) {
-        updateSliderLimits();
+        const excludeDuplicate = document.getElementById("exc-duplicate").checked;
+        const staticPassword = getStaticPassword();
+        let currentValue = parseInt(lengthSlider.value, 10);
+        
+        // Validate length if "Exclude duplicates" is enabled
+        if (excludeDuplicate && staticPassword.length > 0) {
+            const maxPossibleLength = staticPassword.length;
+            if (currentValue > maxPossibleLength) {
+                // Auto-adjust and show toast notification
+                lengthSlider.value = maxPossibleLength;
+                currentValue = maxPossibleLength;
+                showToast(`Max length adjusted to ${maxPossibleLength} (pool size)`, "info");
+            }
+        }
+        
+        // FIX: Update the displayed value on slider movement
+        if (lengthDisplay) lengthDisplay.innerText = currentValue;
+        
         generatePassword();
+        updatePassIndicator();
     }
     saveSettings();
 };
